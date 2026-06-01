@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Natuner Khoje{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
+    .opacity-0 { opacity: 0; }
+  </style>
+</head>
+
+<body class="text-gray-800">
+
+  <a href="#content" class="sr-only focus:not-sr-only">Skip to content</a>
+
+  <header class="sticky top-0 bg-white shadow z-50" x-data="{open:false}">
+    <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+      <a href="{{ url_for('home') }}" class="font-bold text-emerald-600">CHAKDAH NATUNER KHOJE</a>
+      <div class="hidden md:flex items-center gap-4">
+        <a href="mailto:khojenatuner@gmail.com" class="text-slate-700 hover:text-emerald-700 font-medium">khojenatuner@gmail.com</a>
+      </div>
+      <button class="md:hidden" @click="open=!open" aria-label="Menu">☰</button>
+      <nav class="hidden md:flex gap-6">
+        <a href="{{ url_for('about_view') }}">About</a>
+        <a href="{{ url_for('activities_view') }}">Activities</a>
+        <a href="{{ url_for('contact_view') }}">Contact</a>
+        <a href="{{ url_for('blog_view') }}">Blog</a>
+        <a href="{{ url_for('donate_view') }}">Donate</a>
+      </nav>
+    </div>
+    <nav x-show="open" class="md:hidden bg-white border-t">
+      <a class="block p-3" href="{{ url_for('about_view') }}">About</a>
+      <a class="block p-3" href="{{ url_for('activities_view') }}">Activities</a>
+      <a class="block p-3" href="{{ url_for('contact_view') }}">Contact</a>
+      <a class="block p-3" href="{{ url_for('blog_view') }}">Blog</a>
+      <a class="block p-3" href="{{ url_for('donate_view') }}">Donate</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-emerald-600 text-white text-center py-6 mt-20">
+    © 2025 Chakdah Natuner Khoje
+  </footer>
+
+</body>
+
+</html>

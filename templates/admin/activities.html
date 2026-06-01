@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}Activities - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Activities</h1>
+        <a href="{{ url_for('admin_add_activity') }}" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition">
+            Add New Activity
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for activity in activities %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        {% if activity.image %}
+                        <img src="{{ activity.image_url }}" alt="{{ activity.title }}" class="w-16 h-16 object-cover rounded">
+                        {% else %}
+                        <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400">No Image</div>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ activity.title }}</td>
+                    <td class="px-6 py-4 text-gray-600">{{ activity.description[:100] }}{% if activity.description|length > 100 %}...{% endif %}</td>
+                    <td class="px-6 py-4 flex gap-2">
+                        <a href="{{ url_for('admin_edit_activity', id=activity.id) }}" class="text-emerald-600 hover:text-emerald-800">Edit</a>
+                        <form action="{{ url_for('admin_delete_activity', id=activity.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                        No activities found. Add your first activity!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

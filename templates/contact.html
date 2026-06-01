@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Contact | Natuner Khoje{% endblock %}
+
+{% block content %}
+<section class="max-w-6xl mx-auto py-16 px-4">
+    <h1 class="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-800 border-b-4 border-emerald-600 inline-block pb-3">
+        Contact Us
+    </h1>
+
+    <!-- Contact Persons Table -->
+    <div class="mb-16">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300 shadow-lg">
+                <thead>
+                    <tr class="bg-emerald-600 text-white">
+                        <th class="border border-gray-300 px-6 py-4 text-left font-semibold">S.No</th>
+                        <th class="border border-gray-300 px-6 py-4 text-left font-semibold">Name</th>
+                        <th class="border border-gray-300 px-6 py-4 text-left font-semibold">Designation</th>
+                        <th class="border border-gray-300 px-6 py-4 text-left font-semibold">Contact No</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in contact_persons %}
+                    <tr class="hover:bg-gray-50 {{ 'bg-white' if loop.index is odd else 'bg-gray-50' }}">
+                        <td class="border border-gray-300 px-6 py-4 text-gray-700">{{ loop.index }}</td>
+                        <td class="border border-gray-300 px-6 py-4 text-gray-700 font-medium">{{ person.name }}</td>
+                        <td class="border border-gray-300 px-6 py-4 text-gray-700">{{ person.designation }}</td>
+                        <td class="border border-gray-300 px-6 py-4 text-gray-700">{{ person.contact_no }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="border border-gray-300 px-6 py-4 text-center text-gray-500">
+                            No contact persons added yet. Please add them from the admin panel.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Email Section -->
+    {% if contact_info %}
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-emerald-600 inline-block pb-2">
+            Email Us
+        </h2>
+        <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <p class="text-lg text-gray-700">
+                <span class="font-semibold text-emerald-600">Email:</span>
+                <a href="mailto:{{ contact_info.email }}" class="text-emerald-600 hover:text-emerald-700 underline ml-2">
+                    {{ contact_info.email }}
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Photos Section -->
+    {% if contact_photos %}
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-emerald-600 inline-block pb-2">
+            Gallery
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for photo in contact_photos %}
+            <div class="overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <img src="{{ photo.image_url }}" alt="Contact Photo {{ loop.index }}" 
+                     class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Address Section -->
+    {% if contact_info %}
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-emerald-600 inline-block pb-2">
+            Address
+        </h2>
+        <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+            <p class="text-lg text-gray-700 leading-relaxed whitespace-pre-line">{{ contact_info.address }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Google Map Section -->
+    {% if contact_info and contact_info.google_map_embed %}
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-emerald-600 inline-block pb-2">
+            Find Us
+        </h2>
+        <div class="rounded-lg overflow-hidden shadow-lg">
+            <div class="w-full h-96 relative">
+                <div class="absolute inset-0">
+                    {{ contact_info.google_map_embed|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

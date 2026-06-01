@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="text-3xl font-bold text-emerald-600 mb-2">{{ activity_count }}</div>
+            <div class="text-gray-600">Activities</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="text-3xl font-bold text-emerald-600 mb-2">{{ carousel_count }}</div>
+            <div class="text-gray-600">Carousel Images</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="text-3xl font-bold text-emerald-600 mb-2">{{ contact_count }}</div>
+            <div class="text-gray-600">Contact Persons</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <div class="text-3xl font-bold text-emerald-600 mb-2">{{ photo_count }}</div>
+            <div class="text-gray-600">Contact Photos</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Links</h2>
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ url_for('admin_add_activity') }}" class="text-emerald-600 hover:text-emerald-800">
+                        &rarr; Add New Activity
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_add_carousel') }}" class="text-emerald-600 hover:text-emerald-800">
+                        &rarr; Add New Carousel Image
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_add_contact_person') }}" class="text-emerald-600 hover:text-emerald-800">
+                        &rarr; Add New Contact Person
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_add_contact_photo') }}" class="text-emerald-600 hover:text-emerald-800">
+                        &rarr; Add New Contact Photo
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Site Status</h2>
+            <div class="text-green-600 font-medium">
+                <span class="inline-block w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                Site is Live
+            </div>
+            <p class="text-gray-600 mt-2">Manage your content to keep the site fresh!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

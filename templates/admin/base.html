@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Natuner Khoje{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-emerald-700 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{{ url_for('admin_dashboard') }}" class="text-xl font-bold">
+                    Natuner Khoje Admin
+                </a>
+                <div class="flex gap-4">
+                    <a href="{{ url_for('home') }}" class="hover:bg-emerald-600 px-3 py-2 rounded transition">
+                        View Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow min-h-screen">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Menu</h3>
+        <ul class="space-y-2">
+            <li>
+                <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if request.path == url_for('admin_dashboard') %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_activities') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'activities' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Activities
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_carousel') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'carousel' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Carousel
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_blog') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'admin/blog' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Blog
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_contact_persons') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'contact-persons' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Contact Persons
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_contact_info') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'contact-info' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Contact Info
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_contact_photos') }}" class="block px-4 py-2 rounded hover:bg-emerald-50 hover:text-emerald-700 {% if 'contact-photos' in request.path %}bg-emerald-50 text-emerald-700 font-medium{% endif %}">
+                    Contact Photos
+                </a>
+            </li>
+        </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-4 p-4 rounded {% if category == 'success' %}bg-green-100 text-green-700 border border-green-300{% else %}bg-red-100 text-red-700 border border-red-300{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

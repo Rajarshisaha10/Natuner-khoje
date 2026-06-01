@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Contact Photos - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Contact Photos</h1>
+        <a href="{{ url_for('admin_add_contact_photo') }}" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition">
+            Add New Photo
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for photo in photos %}
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            {% if photo.image %}
+            <img src="{{ photo.image_url }}" alt="Photo {{ photo.id }}" class="w-full h-48 object-cover">
+            {% else %}
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>
+            {% endif %}
+            <div class="p-4">
+                <p class="text-gray-600 text-sm mb-3">Order: {{ photo.order }}</p>
+                <div class="flex gap-2">
+                    <a href="{{ url_for('admin_edit_contact_photo', id=photo.id) }}" class="text-emerald-600 hover:text-emerald-800">Edit</a>
+                    <form action="{{ url_for('admin_delete_contact_photo', id=photo.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full bg-white p-8 rounded-lg shadow text-center text-gray-500">
+            No contact photos found. Add your first photo!
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

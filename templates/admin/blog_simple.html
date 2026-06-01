@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}Blog - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Blog Posts</h1>
+        <a href="{{ url_for('admin_add_blog') }}" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 transition">
+            Add New Post
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for post in posts %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        {% if post.featured_image %}
+                        <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-16 h-16 object-cover rounded">
+                        {% else %}
+                        <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400">No Image</div>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ post.title }}</td>
+                    <td class="px-6 py-4 text-gray-600">{{ post.published_at.strftime('%Y-%m-%d %H:%M') if post.published_at else '' }}</td>
+                    <td class="px-6 py-4 flex gap-2">
+                        <a href="{{ url_for('admin_edit_blog', id=post.id) }}" class="text-emerald-600 hover:text-emerald-800">Edit</a>
+                        <form action="{{ url_for('admin_delete_blog', id=post.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                            <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                        No blog posts yet. Add your first post!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
