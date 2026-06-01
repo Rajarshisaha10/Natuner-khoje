@@ -37,9 +37,6 @@
   <header class="sticky top-0 bg-white shadow z-50" x-data="{open:false}">
     <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
       <a href="{{ url_for('home') }}" class="font-bold text-emerald-600">CHAKDAH NATUNER KHOJE</a>
-      <div class="hidden md:flex items-center gap-4">
-        <a href="mailto:khojenatuner@gmail.com" class="text-slate-700 hover:text-emerald-700 font-medium">khojenatuner@gmail.com</a>
-      </div>
       <button class="md:hidden" @click="open=!open" aria-label="Menu">☰</button>
       <nav class="hidden md:flex gap-6">
         <a href="{{ url_for('about_view') }}">About</a>
