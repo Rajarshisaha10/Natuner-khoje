@@ -2,84 +2,120 @@
 {% block title %}Donate - Natuner Khoje{% endblock %}
 
 {% block content %}
-<section class="max-w-4xl mx-auto py-20 px-4">
-  <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center text-gray-800 border-b-4 border-emerald-600 inline-block pb-3 mx-auto block">
-    Donate Now
-  </h1>
-
-  <div class="text-center mb-12">
-    <p class="text-xl text-gray-700 leading-relaxed">
-      We solicit your kind support in our endeavor to serve the deprived section of the society.
+<section class="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 text-white">
+  <div class="max-w-6xl mx-auto px-4 py-16 md:py-20 text-center">
+    <p class="text-emerald-100 uppercase tracking-widest text-sm font-semibold mb-4">Support Our Mission</p>
+    <h1 class="text-4xl md:text-5xl font-bold mb-6">Donate Now</h1>
+    <p class="text-lg md:text-xl text-emerald-50 max-w-3xl mx-auto leading-relaxed">
+      We solicit your kind support in our endeavor to serve the deprived section of society.
+      Every contribution helps us continue education, healthcare, and empowerment programs across West Bengal and Jharkhand.
     </p>
   </div>
+</section>
 
-  <!-- Section 80G Info -->
-  <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-8 mb-12 text-center">
-    <h2 class="text-2xl font-bold text-emerald-800 mb-4">
-      Tax Benefit - Section 80G
-    </h2>
-    <p class="text-lg text-gray-700">
-      Donations are eligible for Section 80G tax exemption.
+<section class="max-w-6xl mx-auto px-4 -mt-10 pb-20 relative z-10" x-data="{ copied: '' }">
+  <!-- Trust badges -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+    <div class="bg-white rounded-xl shadow-lg p-5 border border-emerald-100 text-center">
+      <p class="text-2xl mb-2">📋</p>
+      <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Registered NGO</p>
+      <p class="font-semibold text-gray-800 text-sm">S0028930 of 2022–23</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg p-5 border border-emerald-100 text-center">
+      <p class="text-2xl mb-2">✅</p>
+      <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Tax Exemption</p>
+      <p class="font-semibold text-gray-800 text-sm">Section 80G Approved</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg p-5 border border-emerald-100 text-center">
+      <p class="text-2xl mb-2">🏛️</p>
+      <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Registration</p>
+      <p class="font-semibold text-gray-800 text-sm">12A Registered</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg p-5 border border-emerald-100 text-center">
+      <p class="text-2xl mb-2">🤝</p>
+      <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">CSR Eligible</p>
+      <p class="font-semibold text-gray-800 text-sm">CSR-1 Certified</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+    <!-- Section 80G -->
+    <div class="lg:col-span-1">
+      <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-8 h-full">
+        <div class="w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center text-white text-xl font-bold mb-5">₹</div>
+        <h2 class="text-2xl font-bold text-emerald-800 mb-4">Tax Benefit — Section 80G</h2>
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Donations to Chakdah Natuner Khoje are eligible for tax exemption under Section 80G of the Income Tax Act, 1961.
+        </p>
+        <p class="text-sm text-gray-600">
+          After your donation, please share your transaction details via our
+          <a href="{{ url_for('contact_view') }}" class="text-emerald-700 font-semibold hover:underline">Contact page</a>
+          to receive your donation receipt.
+        </p>
+      </div>
+    </div>
+
+    <!-- Bank details -->
+    <div class="lg:col-span-2">
+      <div class="bg-white rounded-2xl shadow-xl p-8 md:p-10 border border-gray-100 h-full">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-700 text-lg">🏦</div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-800">Bank Account Details</h2>
+            <p class="text-gray-500 text-sm">For NEFT, RTGS, IMPS, and direct bank transfers</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Account Name</p>
+            <p class="text-lg font-semibold text-gray-800">Chakdah Notuner Khoje</p>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Bank Name & Branch</p>
+            <p class="text-lg font-semibold text-gray-800">IDBI Bank, Chakdaha Branch</p>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Account Number</p>
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-lg font-semibold text-gray-800 font-mono">1136104000194570</p>
+              <button type="button"
+                @click="navigator.clipboard.writeText('1136104000194570'); copied = 'account'; setTimeout(() => copied = '', 2000)"
+                class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 whitespace-nowrap">
+                <span x-show="copied !== 'account'">Copy</span>
+                <span x-show="copied === 'account'">Copied!</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">IFSC Code</p>
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-lg font-semibold text-gray-800 font-mono">IBKL0001136</p>
+              <button type="button"
+                @click="navigator.clipboard.writeText('IBKL0001136'); copied = 'ifsc'; setTimeout(() => copied = '', 2000)"
+                class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 whitespace-nowrap">
+                <span x-show="copied !== 'ifsc'">Copy</span>
+                <span x-show="copied === 'ifsc'">Copied!</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing note -->
+  <div class="text-center bg-white rounded-2xl shadow-lg p-10 border border-gray-100">
+    <p class="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto mb-6">
+      Your contribution will help us continue our work for the betterment of the underprivileged — supporting free education, healthcare, nutrition, and women's empowerment programs.
     </p>
-  </div>
-
-  <!-- Bank Account Details -->
-  <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12">
-    <h2 class="text-2xl font-bold mb-8 text-emerald-700 text-center">
-      Bank Account Details
-    </h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-      <div class="space-y-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Account Name</p>
-        <p class="text-lg font-semibold text-gray-800">Chakdah Notuner Khoje</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Bank Name & Branch</p>
-        <p class="text-lg font-semibold text-gray-800">IDBI Bank, Chakdaha Branch</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">Account No.</p>
-        <p class="text-lg font-semibold text-gray-800">1136104000194570</p>
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-sm text-gray-500 uppercase tracking-wide">IFSC Code</p>
-        <p class="text-lg font-semibold text-gray-800">IBKL0001136</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Digital Payment Methods -->
-  <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-    <h2 class="text-2xl font-bold mb-8 text-emerald-700 text-center">
-      Digital Payment Methods
-    </h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-      <div class="text-center p-6 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors">
-        <div class="text-4xl mb-4">📱</div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">UPI</h3>
-      </div>
-      
-      <div class="text-center p-6 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors">
-        <div class="text-4xl mb-4">💳</div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">PhonePe</h3>
-      </div>
-      
-      <div class="text-center p-6 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors">
-        <div class="text-4xl mb-4">🔵</div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">Google Pay</h3>
-      </div>
-    </div>
-
-    <div class="mt-10 pt-8 border-t border-gray-200 text-center">
-      <p class="text-gray-600">
-        Your contribution will help us continue our work for the betterment of the underprivileged.
-      </p>
-    </div>
+    <a href="{{ url_for('contact_view') }}"
+      class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors">
+      Contact Us for Donation Receipt
+    </a>
   </div>
 </section>
 {% endblock %}
