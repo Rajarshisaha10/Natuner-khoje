@@ -1,8 +1,10 @@
 from pathlib import Path
 import sqlite3
 from datetime import datetime
-from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash
+from functools import wraps
+from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash, session
 from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash, generate_password_hash
 import os
 
 
@@ -15,6 +17,37 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 app.config['MEDIA_FOLDER'] = MEDIA_FOLDER
 app.secret_key = 'natuner_khoje_secret_key_2026'
+# Hashed password for "seekinghope"
+ADMIN_PASSWORD_HASH = 'scrypt:32768:8:1$0dEHgtemLGGk4LlA$d51ed5d14a28569b1ac30f77d9f899c01b3948256341ac07666af77f6abead9f0cbd70fc631cc6c2c456125b0baec8a157a558c00ad4619ff6bc384f95b6d45e'
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route("/admin/login/", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password")
+        if check_password_hash(ADMIN_PASSWORD_HASH, password):
+            session['logged_in'] = True
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Incorrect password!', 'error')
+    return render_template("admin/login.html")
+
+
+@app.route("/admin/logout/")
+def logout():
+    session.pop('logged_in', None)
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('login'))
 
 
 def get_db():
@@ -145,6 +178,7 @@ def donate_view():
 
 # ============ ADMIN ROUTES ============
 @app.route("/admin/")
+@login_required
 def admin_dashboard():
     # Get counts for dashboard
     db = get_db()
@@ -162,6 +196,7 @@ def admin_dashboard():
 
 # Activities
 @app.route("/admin/activities/")
+@login_required
 def admin_activities():
     activities = fetch_all("SELECT id, title, description, image, created_at FROM content_activity ORDER BY id")
     for a in activities:
@@ -170,6 +205,7 @@ def admin_activities():
 
 
 @app.route("/admin/activities/add/", methods=["GET", "POST"])
+@login_required
 def admin_add_activity():
     if request.method == "POST":
         title = request.form.get("title")
@@ -190,6 +226,7 @@ def admin_add_activity():
 
 
 @app.route("/admin/activities/<int:id>/edit/", methods=["GET", "POST"])
+@login_required
 def admin_edit_activity(id):
     activity = fetch_one("SELECT * FROM content_activity WHERE id = ?", (id,))
     if not activity:
@@ -226,6 +263,7 @@ def admin_delete_activity(id):
 
 # Carousel Images
 @app.route("/admin/carousel/")
+@login_required
 def admin_carousel():
     items = fetch_all("SELECT id, title, image, \"order\" FROM content_carouselimage ORDER BY \"order\", id")
     for i in items:
@@ -254,6 +292,7 @@ def admin_add_carousel():
 
 
 @app.route("/admin/carousel/<int:id>/edit/", methods=["GET", "POST"])
+@login_required
 def admin_edit_carousel(id):
     item = fetch_one("SELECT * FROM content_carouselimage WHERE id = ?", (id,))
     if not item:
@@ -280,6 +319,7 @@ def admin_edit_carousel(id):
 
 
 @app.route("/admin/carousel/<int:id>/delete/", methods=["POST"])
+@login_required
 def admin_delete_carousel(id):
     db = get_db()
     db.execute("DELETE FROM content_carouselimage WHERE id = ?", (id,))
@@ -290,12 +330,14 @@ def admin_delete_carousel(id):
 
 # Contact Persons
 @app.route("/admin/contact-persons/")
+@login_required
 def admin_contact_persons():
     persons = fetch_all("SELECT id, name, designation, contact_no, \"order\" FROM content_contactperson ORDER BY \"order\", id")
     return render_template("admin/contact_persons.html", persons=persons)
 
 
 @app.route("/admin/contact-persons/add/", methods=["GET", "POST"])
+@login_required
 def admin_add_contact_person():
     if request.method == "POST":
         name = request.form.get("name")
@@ -341,6 +383,7 @@ def admin_edit_contact_person(id):
 
 
 @app.route("/admin/contact-persons/<int:id>/delete/", methods=["POST"])
+@login_required
 def admin_delete_contact_person(id):
     db = get_db()
     db.execute("DELETE FROM content_contactperson WHERE id = ?", (id,))
@@ -381,6 +424,7 @@ def admin_contact_info():
 
 # Contact Photos
 @app.route("/admin/contact-photos/")
+@login_required
 def admin_contact_photos():
     photos = fetch_all("SELECT id, image, \"order\", created_at FROM content_contactphoto ORDER BY \"order\", id")
     for p in photos:
@@ -389,6 +433,7 @@ def admin_contact_photos():
 
 
 @app.route("/admin/contact-photos/add/", methods=["GET", "POST"])
+@login_required
 def admin_add_contact_photo():
     if request.method == "POST":
         order = request.form.get("order", 0)
@@ -433,6 +478,7 @@ def admin_edit_contact_photo(id):
 
 
 @app.route("/admin/contact-photos/<int:id>/delete/", methods=["POST"])
+@login_required
 def admin_delete_contact_photo(id):
     db = get_db()
     db.execute("DELETE FROM content_contactphoto WHERE id = ?", (id,))
@@ -505,6 +551,7 @@ def admin_edit_blog(id):
 
 
 @app.route("/admin/blog/<int:id>/delete/", methods=["POST"])
+@login_required
 def admin_delete_blog(id):
     db = get_db()
     db.execute("DELETE FROM content_blogpost WHERE id = ?", (id,))
@@ -514,4 +561,5 @@ def admin_delete_blog(id):
 
 
 if __name__ == "__main__":
+    app.run(debug=True)
     app.run(debug=True)
