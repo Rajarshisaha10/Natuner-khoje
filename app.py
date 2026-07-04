@@ -2,10 +2,10 @@ from pathlib import Path
 import sqlite3
 from datetime import datetime
 from functools import wraps
+from time import time
 from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash, session
 from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash, generate_password_hash
-import os
+from werkzeug.security import check_password_hash
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -16,9 +16,46 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.config['MEDIA_FOLDER'] = MEDIA_FOLDER
-app.secret_key = 'natuner_khoje_secret_key_2026'
-# Hashed password for "seekinghope"
-ADMIN_PASSWORD_HASH = 'scrypt:32768:8:1$0dEHgtemLGGk4LlA$d51ed5d14a28569b1ac30f77d9f899c01b3948256341ac07666af77f6abead9f0cbd70fc631cc6c2c456125b0baec8a157a558c00ad4619ff6bc384f95b6d45e'
+app.secret_key = '39b32d04ffc4243262391cd33c680241e5e1f704b1f404562ebab93f547f787b'
+ADMIN_PASSWORD_HASH = 'scrypt:32768:8:1$ppSbMms6fd2LcmlS$37c717afbc67a948074e0636dc3fcb03f1a602fc8aef895952f05a6a0e48cfba4a3330a072a47ea6d853c0fc6b21d8a39dd20140f03ae4f30f989c0fc2273ebe'
+ADMIN_RATE_LIMIT_REQUESTS = 120
+ADMIN_RATE_LIMIT_WINDOW = 60
+LOGIN_FAILED_LIMIT = 5
+LOGIN_FAILED_WINDOW = 15 * 60
+_admin_rate_limits = {}
+_login_failed_attempts = {}
+
+
+def get_client_ip():
+    forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if forwarded_for:
+        return forwarded_for.split(",", 1)[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def is_rate_limited(store, key, limit, window_seconds):
+    now = time()
+    attempts = [timestamp for timestamp in store.get(key, []) if now - timestamp < window_seconds]
+    store[key] = attempts
+    return len(attempts) >= limit
+
+
+def record_rate_limit_attempt(store, key, window_seconds):
+    now = time()
+    attempts = [timestamp for timestamp in store.get(key, []) if now - timestamp < window_seconds]
+    attempts.append(now)
+    store[key] = attempts
+
+
+@app.before_request
+def limit_admin_requests():
+    if not request.path.startswith("/admin/"):
+        return None
+    key = get_client_ip()
+    if is_rate_limited(_admin_rate_limits, key, ADMIN_RATE_LIMIT_REQUESTS, ADMIN_RATE_LIMIT_WINDOW):
+        return "Too many admin requests. Please wait a minute and try again.", 429
+    record_rate_limit_attempt(_admin_rate_limits, key, ADMIN_RATE_LIMIT_WINDOW)
+    return None
 
 
 def login_required(f):
@@ -33,12 +70,19 @@ def login_required(f):
 @app.route("/admin/login/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        client_ip = get_client_ip()
+        if is_rate_limited(_login_failed_attempts, client_ip, LOGIN_FAILED_LIMIT, LOGIN_FAILED_WINDOW):
+            flash('Too many failed login attempts. Please wait 15 minutes and try again.', 'error')
+            return render_template("admin/login.html"), 429
+
         password = request.form.get("password")
         if check_password_hash(ADMIN_PASSWORD_HASH, password):
+            _login_failed_attempts.pop(client_ip, None)
             session['logged_in'] = True
             flash('Logged in successfully!', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
+            record_rate_limit_attempt(_login_failed_attempts, client_ip, LOGIN_FAILED_WINDOW)
             flash('Incorrect password!', 'error')
     return render_template("admin/login.html")
 
@@ -253,6 +297,7 @@ def admin_edit_activity(id):
 
 
 @app.route("/admin/activities/<int:id>/delete/", methods=["POST"])
+@login_required
 def admin_delete_activity(id):
     db = get_db()
     db.execute("DELETE FROM content_activity WHERE id = ?", (id,))
@@ -272,6 +317,7 @@ def admin_carousel():
 
 
 @app.route("/admin/carousel/add/", methods=["GET", "POST"])
+@login_required
 def admin_add_carousel():
     if request.method == "POST":
         title = request.form.get("title")
@@ -358,6 +404,7 @@ def admin_add_contact_person():
 
 
 @app.route("/admin/contact-persons/<int:id>/edit/", methods=["GET", "POST"])
+@login_required
 def admin_edit_contact_person(id):
     person = fetch_one("SELECT * FROM content_contactperson WHERE id = ?", (id,))
     if not person:
@@ -394,6 +441,7 @@ def admin_delete_contact_person(id):
 
 # Contact Info
 @app.route("/admin/contact-info/", methods=["GET", "POST"])
+@login_required
 def admin_contact_info():
     contact_info = fetch_one("SELECT * FROM content_contactinfo ORDER BY id LIMIT 1")
     if not contact_info:
@@ -453,6 +501,7 @@ def admin_add_contact_photo():
 
 
 @app.route("/admin/contact-photos/<int:id>/edit/", methods=["GET", "POST"])
+@login_required
 def admin_edit_contact_photo(id):
     photo = fetch_one("SELECT * FROM content_contactphoto WHERE id = ?", (id,))
     if not photo:
@@ -497,6 +546,7 @@ def blog_view():
 
 # Admin Blog
 @app.route("/admin/blog/")
+@login_required
 def admin_blog():
     posts = fetch_all("SELECT id, title, content, featured_image, published_at FROM content_blogpost ORDER BY published_at DESC")
     for post in posts:
@@ -505,6 +555,7 @@ def admin_blog():
 
 
 @app.route("/admin/blog/add/", methods=["GET", "POST"])
+@login_required
 def admin_add_blog():
     if request.method == "POST":
         title = request.form.get("title")
@@ -525,6 +576,7 @@ def admin_add_blog():
 
 
 @app.route("/admin/blog/<int:id>/edit/", methods=["GET", "POST"])
+@login_required
 def admin_edit_blog(id):
     post = fetch_one("SELECT * FROM content_blogpost WHERE id = ?", (id,))
     if not post:
@@ -561,5 +613,4 @@ def admin_delete_blog(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-    app.run(debug=True)
+    app.run(debug=False, use_reloader=False)
