@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import sqlite3
 from datetime import datetime
 from functools import wraps
@@ -6,7 +7,10 @@ from time import time
 from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash, session
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
+from dotenv import load_dotenv
+from flask_wtf.csrf import CSRFProtect
 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 DATABASE = BASE_DIR / "db.sqlite3"
@@ -15,9 +19,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 app.config['MEDIA_FOLDER'] = MEDIA_FOLDER
-app.secret_key = '39b32d04ffc4243262391cd33c680241e5e1f704b1f404562ebab93f547f787b'
-ADMIN_PASSWORD_HASH = 'scrypt:32768:8:1$ppSbMms6fd2LcmlS$37c717afbc67a948074e0636dc3fcb03f1a602fc8aef895952f05a6a0e48cfba4a3330a072a47ea6d853c0fc6b21d8a39dd20140f03ae4f30f989c0fc2273ebe'
+app.secret_key = os.environ.get('SECRET_KEY', '39b32d04ffc4243262391cd33c680241e5e1f704b1f404562ebab93f547f787b')
+ADMIN_PASSWORD_HASH = os.environ.get('ADMIN_PASSWORD_HASH', 'scrypt:32768:8:1$nuJ0o7eCyxyhaaWV$119bd7bea156a9cdc0f8a82f742c0ae3f3165b93ed21761de9fe826b3bdef9fff465c71de7f5027db461a771c3b37c1325fb8d37680bb6da7865609ddd746c1a')
 ADMIN_RATE_LIMIT_REQUESTS = 120
 ADMIN_RATE_LIMIT_WINDOW = 60
 LOGIN_FAILED_LIMIT = 5

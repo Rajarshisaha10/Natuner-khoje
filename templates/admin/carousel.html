@@ -24,6 +24,7 @@
                 <div class="flex gap-2">
                     <a href="{{ url_for('admin_edit_carousel', id=item.id) }}" class="text-emerald-600 hover:text-emerald-800">Edit</a>
                     <form action="{{ url_for('admin_delete_carousel', id=item.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
                     </form>
                 </div>
