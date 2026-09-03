@@ -4,7 +4,7 @@ import sqlite3
 from datetime import datetime
 from functools import wraps
 from time import time
-from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash, session
+from flask import Flask, g, render_template, send_from_directory, request, redirect, url_for, flash, session, Response
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from dotenv import load_dotenv
@@ -547,6 +547,37 @@ def blog_view():
     for post in posts:
         post["image_url"] = media_url(post["featured_image"])
     return render_template("blog.html", posts=posts)
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    base_url = request.url_root.rstrip("/")
+    pages = [
+        {"loc": f"{base_url}/", "changefreq": "weekly", "priority": "1.0"},
+        {"loc": f"{base_url}/about/", "changefreq": "monthly", "priority": "0.8"},
+        {"loc": f"{base_url}/activities/", "changefreq": "weekly", "priority": "0.8"},
+        {"loc": f"{base_url}/donate/", "changefreq": "monthly", "priority": "0.9"},
+        {"loc": f"{base_url}/blog/", "changefreq": "weekly", "priority": "0.7"},
+        {"loc": f"{base_url}/contact/", "changefreq": "monthly", "priority": "0.7"},
+    ]
+    
+    xml_lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for page in pages:
+        xml_lines.append("  <url>")
+        xml_lines.append(f"    <loc>{page['loc']}</loc>")
+        xml_lines.append(f"    <changefreq>{page['changefreq']}</changefreq>")
+        xml_lines.append(f"    <priority>{page['priority']}</priority>")
+        xml_lines.append("  </url>")
+    xml_lines.append("</urlset>")
+    
+    return Response("\n".join(xml_lines), mimetype="application/xml")
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    base_url = request.url_root.rstrip("/")
+    content = f"User-agent: *\nDisallow: /admin/\n\nSitemap: {base_url}/sitemap.xml\n"
+    return Response(content, mimetype="text/plain")
 
 
 # Admin Blog
